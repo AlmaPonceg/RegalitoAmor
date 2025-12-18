@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi bebé ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+
+ <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+    /* --- ESTILOS GENERALES Y FONDO VINTAGE --- */
+    html, body {
+        height: 100%; 
+        margin: 0;
+    }
+
+    body {
+        font-family: 'Lobster', cursive;
+        background-image: url('img/background aesthetic.jpg'); 
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; 
+        text-align: center;
+        color: #4a4a4a;
+        overflow-x: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: url('https://cdn-icons-png.flaticon.com/512/833/833472.png') 16 16, auto;
+
+
+    }
+
+    h1 { 
+        font-family: 'Great Vibes', cursive;
+        font-size: 3.5rem;
+        color: #701d3b; 
+    }
+    /* --- BRILLITOS (Sparkles) CORREGIDOS --- */
+    #sparkles-container {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 9999; /* Por encima de casi todo */
+    }
+
+    .sparkle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 5px rgba(255, 230, 100, 0.5);
+        animation: sparkleAnim 3s infinite ease-in-out;
+        opacity: 0;
+    }
+
+    @keyframes sparkleAnim {
+        0%, 100% { transform: scale(0); opacity: 0; }
+        50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    /* --- PANTALLA DE BIENVENIDA CENTRADA --- */
+    #welcome-screen {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10; 
+    }
+
+    /* ESTILO DE LA TARJETA VINTAGE */
+    .vintage-card-style {
+        background-image: url('img/fondito.png'); 
+        background-size: cover;
+        padding: 70px;
+        border-radius: 15px;
+        box-shadow: 
+            0 55px 45px rgba(0,0,0,0.3), 
+            inset 0 0 300px rgba(185, 42, 42, 0.2); 
+        border: 4px solid #edcdc9; 
+        max-width: 100%;
+        width: 500px; 
+        position: relative; z-index: 3; 
+    }
+
+    #welcome-screen p { 
+        font-size: 1.7rem; 
+        line-height: 1.6; 
+        color:  #312222; 
+        font-family: 'Dancing Script', cursive; 
+        font-weight: 800;
+    }
+
+    /* --- CONTENEDOR DEL JUEGO --- */
+    #game-content {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        z-index: 70; /* Aseguramos que esté por encima */
+    }
+
+    /* --- ESTILOS DEL ROMPECABEZAS --- */
+    #puzzle-container {
+        display: grid;
+        grid-template-columns: repeat(5, 100px); 
+        grid-template-rows: repeat(5, 100px);
+        gap: 2px;
+        justify-content: center;
+        margin: 30px auto; 
+        width: 510px; 
+        transition: opacity 0.5s, transform 0.5s;
+        padding: 10px;
+        background-color: rgba(255,255,255,0.5);
+        border-radius: 10px;
+        box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+    }
+
+    .piece {
+        width: 100px;
+        height: 100px;
+        border: 1px solid rgba(255,255,255,0.3);
+        background-size: 500px 500px; 
+        cursor: pointer;
+        transition: transform 0.1s, border-color 0.1s;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.2); 
+    }
+    
+    .piece:hover { border-color: #ff4d6d; z-index: 2;}
+
+    .selected {
+        outline: 3px solid #ff4d6d;
+        transform: scale(1.05);
+        z-index: 10;
+        box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+    }
+
+    /* --- CONTENEDOR PRINCIPAL DEL SOBRE --- */
+    #envelope-wrapper {
+        cursor: pointer;
+        margin: 20px auto;
+        width: fit-content;
+        /* Inicialmente oculto y desplazado para la animación de entrada */
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+        transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
+    }
+    
+    /* Clase para activar la animación de entrada del sobre */
+    #envelope-wrapper.show-envelope {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    /* --- NUEVO: ESTILOS DEL SOBRE HECHO CON CSS --- */
+    .css-envelope {
+        position: relative;
+        width: 350px;  /* Ancho del sobre */
+        height: 230px; /* Alto del sobre */
+        background-color: #f3e5d8; /* Color base crema */
+        margin: 0 auto;
+        border-radius: 5px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        overflow: hidden; /* Importante para recortar las solapas */
+        transition: transform 0.3s ease;
+    }
+
+    /* Solapas inferiores (el triángulo que apunta hacia arriba) */
+    .css-envelope::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        /* Truco de bordes para hacer triángulos */
+        border-style: solid;
+        border-width: 0 175px 120px 175px; /* Ajusta el tamaño del triángulo */
+        border-color: transparent transparent #e8d5c9 transparent; /* Color un poco más oscuro */
+        z-index: 1;
+    }
+
+    /* Solapa superior (el triángulo que apunta hacia abajo y se abre) */
+    .envelope-flap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 130px 175px 0 175px; /* Triángulo invertido */
+        border-color: #ffc2d1 transparent transparent transparent; /* Color rosado romántico */
+        z-index: 3; /* Por encima de todo */
+        transform-origin: top;
+        transition: transform 0.4s ease;
+    }
+
+    /* El sello de lacre */
+    .wax-seal {
+        position: absolute;
+        top: 105px; /* Posición vertical del sello */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 45px;
+        background: #c21e56; /* Rojo intenso tipo lacre */
+        border-radius: 50%;
+        z-index: 4;
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(0,0,0,0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 30px;
+        color: #ffccd5;
+        border: 2px dotted #a01846; /* Borde para textura */
+        transition: transform 0.2s ease;
+    }
+
+    /* Animación al pasar el mouse sobre el contenedor del sobre */
+    #envelope-wrapper:hover .css-envelope {
+        transform: translateY(-5px); /* El sobre flota un poco */
+    }
+
+    #envelope-wrapper:hover .wax-seal {
+        /* Pequeña vibración en el sello */
+        animation: pulse-seal 0.6s infinite alternate;
+    }
+
+    @keyframes pulse-seal {
+        0% { transform: translateX(-50%) scale(1); }
+        100% { transform: translateX(-50%) scale(1.1); }
+    }
+
+    /* Texto debajo del sobre */
+    #envelope-wrapper p {
+        margin-top: 25px;
+        font-weight: bold;
+        color: #d81b60; 
+        font-size: 2.3rem;
+        font-family: 'Dancing Script', cursive;
+        text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+    }
+
+    /* --- ESTILOS DE LA SECCIÓN FINAL (CARTA) --- */
+    #letter-content {
+        display: none; 
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        padding: 40px 20px;
+        z-index: 100; 
+        overflow-y: auto; 
+        background-color: #1a0510; 
+        background-size: cover;    
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: background-image 0.10s ease-in-out; 
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #letter-content::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); 
+        z-index: -1; 
+        position: fixed; 
+    }
+
+    /* --- ESTILOS DE LOS CORAZONES FLOTANTES --- */
+    #hearts-container {
+        position: fixed; 
+        top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 0; 
+    }
+
+    .heart-particle {
+        position: absolute;
+        width: 20px; height: 20px;
+        background-color: #ff4d6d;
+        transform: rotate(45deg);
+        opacity: 0;
+        bottom: -30px;
+        animation: flotarUp linear forwards;
+        box-shadow: 0 0 10px #ff4d6d, 0 0 20px #ff1744;
+    }
+
+    .heart-particle::before, .heart-particle::after {
+        content: ""; position: absolute;
+        width: 20px; height: 20px;
+        background-color: inherit;
+        border-radius: 50%;
+        box-shadow: inherit;
+    }
+    .heart-particle::before { top: -10px; left: 0; }
+    .heart-particle::after { top: 0; left: -10px; }
+
+    @keyframes flotarUp {
+        0% { opacity: 0; transform: translateY(0) rotate(45deg) scale(0.5); }
+        10% { opacity: 0.8; }
+        100% { opacity: 0; transform: translateY(-120vh) rotate(45deg) scale(1.2); }
+    }
+
+    /* --- ESTILO DE CARTA MANUSCRITA FINAL --- */
+   .carta-estilizada {
+  max-width: 1500px;
+  margin: auto;
+  position: relative;
+  z-index: 2;
+  font-family: 'Dancing Script', cursive;
+  text-align: center;
+
+  /* Fondo translúcido tipo papel */
+  background: rgba(255, 245, 235, 0.45);  /* antes era 0.9 */
+  backdrop-filter: blur(3px); /* desenfoca un poquito el fondo */
+  border-radius: 1px;
+  padding: 40px;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+}
+
+
+
+    .carta-estilizada h2 {
+        color: #6e0c25;
+        margin-top: 0;
+        font-size: 3rem;
+        font-weight: 700;
+        text-shadow: 1px 1px 0px rgba(223, 137, 137, 0.5);
+    }
+
+    .carta-estilizada p {
+        font-size: 1.5rem;
+        line-height: 2;
+        color: #050505; 
+    }
+
+    #start-btn {
+        background: linear-gradient(45deg, #ff4d6d, #d81b60); 
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1.3rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(216, 27, 96, 0.4);
+        font-family: 'Merriweather', serif;
+        margin-top: 20px;
+    }
+    
+    #start-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 20px rgba(216, 27, 96, 0.6);
+        background: linear-gradient(45deg, #d81b60, #ff4d6d);
+    }
+
+
+</style>
+</head>
+
+<body>
+    <div id="sparkles-container"></div>
+
+    <div id="welcome-screen">
+        <div class="vintage-card-style">
+            <h1>Hola mi vida 💖</h1>
+            <p>Es la primera vez que hago esto sola desde el pensarlo hasta al hacerlo y queria que la primera vez que haga un proyecto sola sea para vos, es muy chiquito
+                pero espero que te guste.
+            </p>
+            <p style="font-size: 2rem; margin-top: 30px;">Te Amo</p>
+            <button id="start-btn" onclick="startGame()">¡Apretá Acá!</button>
+        </div>
+        <audio id="bg-music" autoplay loop>
+  <source src="audio/Taylor Swift- Everything Has Changed (Featuring Ed Sheeran).mp3" type="audio/mpeg">
+</audio>
+
+    </div>
+ 
+    <div id="game-content">
+        <h1 style="text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">Ordená nuestra foto gordo 💌</h1>
+        
+        <div id="puzzle-container"></div>
+        
+        <div id="envelope-wrapper" style="display: none;" onclick="showLetter()">
+            <div class="css-envelope">
+                <div class="envelope-flap"></div>
+                <div class="wax-seal">❤️</div> </div>
+            <p>¡Presioná el sobre!</p>
+        </div>
+    </div>
+
+    <div id="letter-content" style="display: none;"> 
+        <div id="hearts-container"></div>
+
+        <div class="carta-estilizada vintage-card-style">
+            <h2>Querido Facu:</h2>
+            <p>Se que estamos pasando momentos dificiles pero yo jamás voy a poder no celebrar cada minuto a tu lado porque sos lo mas importante que tengo en mi vida
+                y se que te voy a amar hasta mi ultimo suspiro. Gracias por estar conmigo, por querer pasar tus diás conmigo, por quererme dar un lugar en tu vida ese es el regalo más lindo que me podes hacer.
+
+                <br> Gracias por existir, gracias por ser vos y gracias por amarme tanto.
+                Este pequeño juego es solo una excusa para decirte cuánto te amo.</p>
+            <p>Cada momento a tu lado es vida para mi, felices 8 meses Te amo infinitamente.<br>  Siempre tuya, Alma. ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN DEL JUEGO ---
+        const imagenUrl = 'img/FyA4meses.jpeg'; // TU FOTO DEL PUZZLE
+        const container = document.getElementById('puzzle-container');
+        const rows = 5; 
+        const cols = 5;
+        const pieceSize = 100; 
+        let selectedPiece = null;
+
+        // --- CONFIGURACIÓN DEL SLIDESHOW DE FONDO ---
+        // TUS FOTOS DE FONDO PARA LA CARTA FINAL
+        const backgroundImages = [
+            'img/fondoCarta/foto1.jpeg',
+            'img/fondoCarta/foto2.jpeg',
+            'img/fondoCarta/foto3.jpeg',
+            'img/fondoCarta/foto4.jpeg',
+            'img/fondoCarta/foto5.jpeg',
+            'img/fondoCarta/foto6.jpeg',
+            'img/fondoCarta/foto7.jpeg',
+            'img/fondoCarta/foto8.jpeg',
+            'img/fondoCarta/foto9.jpeg',
+            'img/fondoCarta/foto10.jpeg',
+            'img/fondoCarta/foto11.jpeg',
+            'img/fondoCarta/foto12.jpeg',
+            'img/fondoCarta/foto13.jpeg',
+            'img/fondoCarta/foto14.jpeg',
+            'img/fondoCarta/foto15.jpeg',
+            'img/fondoCarta/foto16.jpeg',
+            'img/fondoCarta/foto17.jpeg',
+            'img/fondoCarta/foto18.jpeg',
+            'img/fondoCarta/foto19.jpeg',
+            'img/fondoCarta/foto20.jpeg',
+            'img/fondoCarta/foto22.jpeg',
+            'img/fondoCarta/foto25.jpeg',
+        ];
+        let currentBgIndex = 0;
+        let slideInterval;
+
+        // --- Funciones de navegación y lógica ---
+
+        function startGame() {
+            const welcome = document.getElementById('welcome-screen');
+            welcome.style.transition = 'opacity 0.5s ease';
+            welcome.style.opacity = '0';
+            
+            setTimeout(() => {
+                welcome.style.display = 'none';
+                document.getElementById('game-content').style.display = 'block';
+                document.body.style.display = 'block'; 
+                createPuzzle();
+            }, 500);
+        }
+
+        function showLetter() {
+            const gameContent = document.getElementById('game-content');
+            const letterContent = document.getElementById('letter-content');
+
+            gameContent.style.transition = 'opacity 0.5s';
+            gameContent.style.opacity = '0';
+
+            setTimeout(() => {
+                gameContent.style.display = 'none';
+                // Usamos display flex para centrar el contenido verticalmente
+                letterContent.style.display = 'flex'; 
+                
+                changeBackground(); 
+                slideInterval = setInterval(changeBackground, 3000); 
+                startHeartRain();
+            }, 500);
+        }
+
+        function changeBackground() {
+            const letterSection = document.getElementById('letter-content');
+            if (backgroundImages.length > 0) {
+                const nextIndex = (currentBgIndex + 1) % backgroundImages.length;
+                const imgLoader = new Image();
+                imgLoader.src = backgroundImages[nextIndex];
+
+                const imageUrl = backgroundImages[currentBgIndex];
+                letterSection.style.backgroundImage = `url(${imageUrl})`;
+                currentBgIndex = nextIndex;
+            }
+        }
+
+        function startHeartRain() {
+            const heartsContainer = document.getElementById('hearts-container');
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart-particle');
+                heart.style.left = Math.random() * 100 + 'vw';
+                const duration = Math.random() * 7 + 5; 
+                heart.style.animationDuration = duration + 's';
+                const size = Math.random() * 0.5 + 0.5;
+                heart.style.transform = `rotate(45deg) scale(${size})`;
+                heartsContainer.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, duration * 1000 + 100);
+            }, 300);
+        }
+
+
+        // Lógica del Rompecabezas
+        function createPuzzle() {
+            container.innerHTML = '';
+            let piecesOrder = Array.from({length: rows * cols}, (_, i) => i);
+            piecesOrder.sort(() => Math.random() - 0.5);
+
+            piecesOrder.forEach((pos, index) => {
+                const div = document.createElement('div');
+                div.className = 'piece';
+                div.style.backgroundImage = `url(${imagenUrl})`;
+                const row = Math.floor(pos / cols);
+                const col = pos % cols;
+                div.style.backgroundPosition = `-${col * pieceSize}px -${row * pieceSize}px`;
+                div.dataset.correctPos = pos;
+                div.addEventListener('click', handlePieceClick);
+                container.appendChild(div);
+            });
+        }
+
+        function handlePieceClick(e) {
+            const clickedPiece = e.target;
+            if (!selectedPiece) {
+                selectedPiece = clickedPiece;
+                selectedPiece.classList.add('selected');
+            } else {
+                const bg1 = selectedPiece.style.backgroundPosition;
+                const pos1 = selectedPiece.dataset.correctPos;
+                selectedPiece.style.backgroundPosition = clickedPiece.style.backgroundPosition;
+                selectedPiece.dataset.correctPos = clickedPiece.dataset.correctPos;
+                clickedPiece.style.backgroundPosition = bg1;
+                clickedPiece.dataset.correctPos = pos1;
+                selectedPiece.classList.remove('selected');
+                selectedPiece = null;
+                checkWin();
+            }
+        }
+
+        function checkWin() {
+            const currentPieces = document.querySelectorAll('.piece');
+            let win = true;
+            currentPieces.forEach((piece, index) => {
+                if (parseInt(piece.dataset.correctPos) !== index) win = false;
+            });
+
+            if (win) {
+    container.style.opacity = '0';
+    container.style.transform = 'scale(0.8)';
+
+    // Ocultamos el texto "Ordená nuestra foto gordo 💌"
+    const titulo = document.querySelector('#game-content h1');
+    if (titulo) titulo.style.display = 'none';
+
+    setTimeout(() => {
+        container.style.display = 'none';
+        const envelope = document.getElementById('envelope-wrapper');
+        envelope.style.display = 'block';
+        setTimeout(() => {
+             envelope.classList.add('show-envelope');
+        }, 10);
+    }, 500);
+}
+
+        }
+// --- BRILLITOS ---
+        function createSparkles() {
+            const container = document.getElementById('sparkles-container');
+            for (let i = 0; i < 50; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + 'vw';
+                sparkle.style.top = Math.random() * 100 + 'vh';
+                sparkle.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(sparkle);
+            }
+        }
+        createSparkles();
+
+    </script>
+</body>
+</html>
