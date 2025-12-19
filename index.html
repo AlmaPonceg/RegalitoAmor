@@ -460,6 +460,12 @@
         // --- Funciones de navegación y lógica ---
 
         function startGame() {
+            // Iniciar la música
+            const music = document.getElementById('bg-music');
+            music.play().catch(error => {
+                console.log('Error al reproducir el audio:', error);
+            });
+            
             const welcome = document.getElementById('welcome-screen');
             welcome.style.transition = 'opacity 0.5s ease';
             welcome.style.opacity = '0';
